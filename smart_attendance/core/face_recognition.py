@@ -1,73 +1,32 @@
-# import cv2
-
-# # Alternative GStreamer pipeline
-# try:
-#     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
-
-#     windo_name="camera preview"
-
-#     while True:
-#         ret,frame=cap.read()
-        
-#         if not ret:
-#             print("error unable to capture frame")
-#             break
-        
-#         cv2.imshow(windo_name,frame)
-        
-#         key=cv2.waitKey(1)
-        
-#         if key == ord('c'):
-#             cv2.imwrite('photo.jpg',frame)
-#             print('image captured successfuly')
-        
-        
-#         if key == ord('q'):
-#             break
-        
-#     cap.release()
-#     cv2.destroyAllWindows()
-# except:
-#     if not cap.isOpened():
-#         print('error unable to access the cameta')
-    
-# import cv2
-
-# cap = cv2.VideoCapture(0)  # Try default camera
-
-# if not cap.isOpened():
-#     print("Error: Unable to access the camera")
-# else:
-#     print("Camera successfully accessed")
-
-#     ret, frame = cap.read()
-#     if not ret:
-#         print("Error: Unable to capture frame")
-#     else:
-#         print("Frame captured successfully")
-#         cv2.imshow("Test Frame", frame)
-#         cv2.waitKey(0)
-#         cv2.destroyAllWindows()
-
-# cap.release()
-
-# import cv2
-
-# cams_test=100
-# for i in range (-1,cams_test):
-#     cap=cv2.VideoCapture(i,cv2.CAP_DSHOW)
-#     test, frame=cap.read()
-#     print("i : "+str(i)+" // result: " +str(test))
-#     if test:
-#         print("SUCCESSFULL!")
-
-
-
-
 import cv2
-cam_port = 0
-cam = cv2.VideoCapture(cam_port)
-print(cam.isOpened())
-print(cam.grab())
-print(cam.read())
-cam.release()
+import picamera2
+import time
+
+
+def camera_test():
+
+        cv2.startWindowThread()
+
+        picam2 = picamera2.Picamera2()
+        picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (800, 600)}))
+        picam2.start()
+
+        while True:
+                im= picam2.capture_array()
+                cv2.imshow("Camera", im)
+                
+                key = cv2.waitKey(1)
+                if key==ord('s'):
+                        timeStamp = time.strftime("%Y%m%d-%H%M%S")
+                        targetPath="/home/pi5/Desktop/img" + "_"+timeStamp+".jpg"
+                        cv2.imwrite(targetPath, im)
+                        print("- Saved:", targetPath)
+
+                elif key==ord('q'):
+                        print("Quit")
+                        break
+
+        cv2.destroyAllWindows()
+
+
+camera_test()
