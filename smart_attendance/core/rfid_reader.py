@@ -1,18 +1,20 @@
-import RPi.GPIO as gpio
-from mfrc522 import SimpleMFRC522
-from time import sleep
+import time
+from core.MFRC522 import MFRC522
 
 
-gpio.setwarnings(False)
-
-def read_card():
-    reader=SimpleMFRC522()
+def read_card(stop_flag):
+    reader = MFRC522()
     try:
-        print("hold your tag near to reader")
-        id,txt=reader.read()
-        # print(f"your id is {id}")
+        # Detect if a card is present
+        (status, _) = reader.MFRC522_Request(reader.PICC_REQIDL)
+        if status == reader.MI_OK:
+            # Get UID of the card
+            (status, uid) = reader.MFRC522_Anticoll1()
+            if status == reader.MI_OK:
+                return "-".join(str(i) for i in uid)
     except Exception as e:
-        print(f"An error occurred: {e}")
-    finally:
-        gpio.cleanup()
-    return id
+        print(f"RFID Error: {e}")
+    return None
+
+
+
