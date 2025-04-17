@@ -11,37 +11,41 @@ PASSWORD = "your_pass"
 def start_listening(device_id):
     topic = f"devices/{device_id}/control"
     
-    
-
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            print("Connected to broker!")
+            print("✅ Connected to broker!")
             client.subscribe(topic)
-            print(f"Subscribed to topic: {topic}")
+            print(f"📡 Subscribed to topic: {topic}")
         else:
-            print(f"Connection failed with code {rc}")
+            print(f"❌ Connection failed with code {rc}")
 
     def on_message(client, userdata, msg):
-        print(f"Message from {msg.topic}: {msg.payload.decode()}")
-        # Optionally handle specific actions from payload here
+        print(f"📨 Message from {msg.topic}: {msg.payload.decode()}")
         try:
-            import json
             payload = json.loads(msg.payload.decode())
-            if payload.get("action") == "end-check-out":
-                print("Ending session...")
-                client.disconnect()
+            action = payload.get("action")
+            if action:
+                userdata.put(action)  # Pass action to queue
         except Exception as e:
-            print("Failed to parse payload:", e)
+            print("❌ Failed to parse payload:", e)
 
-    client = mqtt.Client()
+    import queue
+    action_queue = queue.Queue()
+
+    client = mqtt.Client(userdata=action_queue)
     client.tls_set(tls_version=ssl.PROTOCOL_TLS)
     client.username_pw_set(USERNAME, PASSWORD)
     client.on_connect = on_connect
     client.on_message = on_message
-
-    print("Starting listening session...")
     client.connect(BROKER_URL, BROKER_PORT)
-    client.loop_forever()
+
+    client.loop_start()  # Use loop_start instead of blocking loop_forever
+
+    # Generator loop
+    while True:
+        action = action_queue.get()
+        yield action
+
 
 
 
