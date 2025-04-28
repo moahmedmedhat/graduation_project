@@ -27,14 +27,14 @@ def update_label(root, session_label, session_type):
     if not session_label.winfo_exists():
         return  # Widget was destroyed, so don't update
 
-    if session_type == "check-in":
+    if session_type == "start-check-in":
         session_label.configure(
             text="✅ Session: Check-In\n🔄 Waiting for RFID...",
             text_color=SECONDARY_COLOR
         )
         stop_rfid.clear()  # Allow RFID to run
         threading.Thread(target=handle_rfid, args=(root, session_label), daemon=True).start()
-    elif session_type == "check-out":
+    elif session_type == "start-check-out":
         session_label.configure(
             text="🚪 Session: Check-Out",
             text_color=PRIMARY_COLOR
