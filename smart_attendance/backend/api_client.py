@@ -1,12 +1,13 @@
-from time import sleep
+# import config.settings
+import time 
 import paho.mqtt.client as mqtt
 import ssl
-
+import json
 # HiveMQ Cloud credentials
-BROKER_URL = "your_broker_url"
+BROKER_URL = "9713f3d043bf4e95bc9ef27e29b4654e.s1.eu.hivemq.cloud"
 BROKER_PORT = 8883
-USERNAME = "your_username"
-PASSWORD = "your_pass"
+USERNAME = "smart_attednace_system"
+PASSWORD = "Smart#12345"
 
 def start_listening(device_id):
     topic = f"devices/{device_id}/control"
@@ -48,19 +49,20 @@ def start_listening(device_id):
 
 
 
-
-
-def send_action(method, id):
+def send_student_data(method, id):
     topic = f"attendance/{method}/request"
     if (method=="check-in"):
         payload = {
-            "method": method,
-            "rfid_tag": id
+            "rfid_tag": id,
+            "device_id" : "4",
+            "marked_by" : "rfid"
         }
     elif(method=="check-out"):
         payload = {
-            "method": method,
-            "student_id": id
+
+            "student_id": id,
+            "device_id" : "4",
+            "marked_by" : "face_recognition"     
         }
 
     def on_connect(client, userdata, flags, rc):
@@ -81,8 +83,6 @@ def send_action(method, id):
     print("Publishing action...")
     client.connect(BROKER_URL, BROKER_PORT)
     client.loop_forever()
-
-
 
 
 
@@ -132,5 +132,3 @@ def get_attendance_response(method,device_id, timeout=10):
     if not done:
         print("⌛ No response received within timeout period.")
     return response
-
-
