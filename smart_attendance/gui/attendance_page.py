@@ -21,31 +21,6 @@ def update_session(root, session_label ,foreground_frame):
             break
         root.after(0, lambda: update_label(root, session_label, session_type , foreground_frame))
 
-
-# def update_label(root, session_label, session_type , camera_container):
-#     if stop_threads.is_set() or not session_label.winfo_exists():
-#         return
-
-#     if session_type == "start-check-in":
-#         face_recognizer.stop()  # Ensure camera is off
-#         session_label.configure(text="✅ Session: Check-In", text_color=SECONDARY_COLOR)
-#         stop_rfid.clear()
-#         threading.Thread(target=handle_rfid, args=(root, session_label), daemon=True).start()
-#         for widget in root.winfo_children():
-#             if isinstance(widget, ctk.CTkFrame) and widget != camera_container:
-#                 widget.lift()
-#     elif session_type == "start-check-out":
-#         stop_rfid.set()
-#         face_recognizer.start()  # Start camera
-#         session_label.configure(text="🚪 Session: Check-Out", text_color=PRIMARY_COLOR)
-#         for widget in root.winfo_children():
-#             if isinstance(widget, ctk.CTkFrame) and widget != camera_container:
-#                 widget.lower()
-#     elif session_type in ("end-check-out", "end-check-in"):
-#         face_recognizer.stop()  # Force-stop camera
-#         session_label.configure(text=f"🚪 Session: {session_type.replace('-', ' ').title()}", text_color=PRIMARY_COLOR)
-
-
 def update_label(root, session_label, session_type,foreground_frame):
     if stop_threads.is_set() or not session_label.winfo_exists():
         return
