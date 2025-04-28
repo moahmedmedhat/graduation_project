@@ -87,4 +87,50 @@ def send_action(method, id):
 
 
 
+def get_attendance_response(method,device_id, timeout=10):
+    response = None
+    topic = f"attendance/{method}/response/${device_id}"
+    done = False  # A flag to break immediately when response comes
+
+    def on_message(client, userdata, msg):
+        nonlocal response, done
+        response = msg.payload.decode()
+        print(f"✅ Received message on topic {msg.topic}: {response}")
+        done = True  # Set the flag to True to break the waiting loop
+        client.disconnect()  # Disconnect immediately
+
+    client = mqtt.Client()
+
+    # Authentication
+    client.username_pw_set(USERNAME, PASSWORD)
+    
+    # Enable TLS encryption
+    client.tls_set(tls_version=ssl.PROTOCOL_TLS)
+    
+    client.on_message = on_message
+
+    try:
+        client.connect(BROKER_URL, BROKER_PORT, keepalive=60)
+    except Exception as e:
+        print("❌ Error connecting to the broker:", e)
+        return None
+
+    client.subscribe(topic)
+    print(f"📡 Subscribed to {topic}. Waiting for response...")
+
+    client.loop_start()
+
+    elapsed = 0
+    interval = 0.1  # Shorter interval = faster reaction
+
+    while not done and elapsed < timeout:
+        time.sleep(interval)
+        elapsed += interval
+
+    client.loop_stop()
+
+    if not done:
+        print("⌛ No response received within timeout period.")
+    return response
+
 
