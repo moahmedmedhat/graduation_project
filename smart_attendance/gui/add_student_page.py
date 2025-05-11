@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from gui.styles import BACKGROUND_COLOR, TEXT_COLOR, FONT_LARGE
+from gui.styles import *
 import os
 import threading
 import cv2
@@ -671,58 +671,184 @@ def create_add_student_page(root, switch_page):
     ctk.set_appearance_mode("dark")
     root.configure(bg=BACKGROUND_COLOR)
 
-    camera_container = ctk.CTkFrame(root, width=400, height=300, fg_color="transparent")
-    camera_container.place(relx=0.5, rely=0.5, anchor="center")
+    header_frame = ctk.CTkFrame(
+        root,
+        fg_color="#2D2D2D",
+        corner_radius=CARD_CORNER_RADIUS,
+        width=CARD_WIDTH,
+        height=int(SCREEN_HEIGHT * 0.12)
+    )
+    header_frame.place(relx=0.5, rely=0.07, anchor="center")
 
-    foreground_frame = ctk.CTkFrame(root, width=400, height=300, fg_color="transparent")
+    title_label = ctk.CTkLabel(
+        header_frame, 
+        text="Add Student", 
+        font=FONT_TITLE, 
+        text_color=TEXT_COLOR
+    )
+    title_label.place(relx=0.5, rely=0.5, anchor="center")
+
+
+
+    camera_container = ctk.CTkFrame(
+        root,
+        fg_color="#191919",
+        corner_radius=CARD_CORNER_RADIUS,
+        width=int(CARD_WIDTH),
+        height=int(SCREEN_HEIGHT * 0.56)
+    )
+    camera_container.place(relx=0.5, rely=0.45, anchor="center")
+
+    camera_border = ctk.CTkFrame(
+        camera_container,
+        fg_color="transparent",
+        corner_radius=CARD_CORNER_RADIUS - 5,
+        border_width=2,
+        border_color=SECONDARY_COLOR,
+        width=int(CARD_WIDTH * 0.85),
+        height=int(SCREEN_HEIGHT * 0.42)
+    )
+    camera_border.place(relx=0.5, rely=0.45, anchor="center")
+
+    preview_label = ctk.CTkLabel(
+        camera_border, 
+        text="", 
+        width=int(CARD_WIDTH * 0.83),
+        height=int(SCREEN_HEIGHT * 0.4)
+    )
+    preview_label.place(relx=0.5, rely=0.5, anchor="center")
+
+    foreground_frame = ctk.CTkFrame(
+        root,
+        fg_color="transparent",
+        width=CARD_WIDTH,
+        height=SCREEN_HEIGHT
+    )
     foreground_frame.place(relx=0.5, rely=0.5, anchor="center")
     
-    # Title Label
-    title_label = ctk.CTkLabel(foreground_frame, text="Add Student", font=FONT_LARGE, text_color=TEXT_COLOR)
-    title_label.place(relx=0.5, rely=0.15, anchor="center")
+    form_card = ctk.CTkFrame(
+        foreground_frame,
+        fg_color="#2D2D2D",
+        corner_radius=CARD_CORNER_RADIUS,
+        width=int(CARD_WIDTH * 0.9),
+        height=int(SCREEN_HEIGHT * 0.56)
+    )
+    form_card.place(relx=0.5, rely=0.45, anchor="center")
+
+    id_label = ctk.CTkLabel(
+        form_card,
+        text="Student ID",
+        font=FONT_SMALL,
+        text_color="#AAAAAA"
+    )
+    id_label.place(relx=0.5, rely=0.25, anchor="center")
 
     # Entry for Student ID
-    student_id_entry = ctk.CTkEntry(foreground_frame, placeholder_text="Enter Student ID")
-    student_id_entry.place(relx=0.5, rely=0.3, anchor="center")
+    student_id_entry = ctk.CTkEntry(
+        form_card,
+        placeholder_text="Enter Student ID",
+        width=250,
+        height=40,
+        font=FONT_MEDIUM,
+        border_color=PRIMARY_COLOR,
+        corner_radius=5
+    )
+    student_id_entry.place(relx=0.5, rely=0.35, anchor="center")
 
-    preview_label = ctk.CTkLabel(camera_container, text="")
-    preview_label.place(relx=0.5, rely=0.55, anchor="center")
+    status_frame = ctk.CTkFrame(
+        form_card,
+        fg_color="#222222",
+        corner_radius=10,
+        width=300,
+        height=60
+    )
+    status_frame.place(relx=0.5, rely=0.58, anchor="center")
+
+    status_label = ctk.CTkLabel(
+        status_frame,
+        text="Ready to capture student photos",
+        font=FONT_SMALL,
+        text_color="#AAAAAA",
+        wraplength=280
+    )
+    status_label.place(relx=0.5, rely=0.5, anchor="center")
     
-    # Status Label
-    status_label = ctk.CTkLabel(foreground_frame, text="", text_color=TEXT_COLOR)
-    status_label.place(relx=0.5, rely=0.7, anchor="center")
+    
+    button_frame = ctk.CTkFrame(
+        form_card,
+        fg_color="transparent",
+        width=350,
+        height=50
+    )
+    button_frame.place(relx=0.5, rely=0.8, anchor="center")
 
     foreground_frame.lift()
     camera_container.lower()
     
     # Troubleshoot Camera Button
     troubleshoot_button = ctk.CTkButton(
-        foreground_frame,
+        button_frame,
         text="Reset Camera",
-        command=lambda: troubleshoot_camera(status_label),
-        width=100,
+        font=FONT_SMALL,
         fg_color="#555555",
-        hover_color="#777777"
+        hover_color="#666666",
+        corner_radius=8,
+        width=120,
+        height=35,
+        command=lambda: troubleshoot_camera(status_label)
     )
-    troubleshoot_button.place(relx=0.5, rely=0.4, anchor="center")
+    troubleshoot_button.place(relx=0.2, rely=0.5, anchor="center")
     
     # Capture Button
     start_capture_button = ctk.CTkButton(
-        foreground_frame,
+        button_frame,
         text="Start Capture",
-        command=lambda: capture_photos(
+        font=FONT_SMALL,
+        fg_color=SECONDARY_COLOR,
+        hover_color="#491F69",  # Darker shade for hover
+        corner_radius=8,
+        width=120,
+        height=35,
+         command=lambda: capture_photos(
             student_id_entry.get(), 
             status_label, 
             preview_label,
             foreground_frame,
             camera_container
-        )
+         )
     )
     start_capture_button.place(relx=0.5, rely=0.5, anchor="center")
 
     # Back Button
-    back_button = ctk.CTkButton(foreground_frame, text="Back", command=lambda: switch_page("home"))
-    back_button.place(relx=0.5, rely=0.8, anchor="center")
+    back_button = ctk.CTkButton(
+        button_frame,
+        text="Back",
+        font=FONT_SMALL,
+        fg_color="#444444",
+        hover_color="#555555",
+        corner_radius=8,
+        width=90,
+        height=35,
+        command=lambda: switch_page("home")
+    )
+    back_button.place(relx=0.8, rely=0.5, anchor="center")
+
+    control_panel = ctk.CTkFrame(
+        root,
+        fg_color="#1A1A1A",
+        corner_radius=CARD_CORNER_RADIUS,
+        width=CARD_WIDTH,
+        height=int(SCREEN_HEIGHT * 0.08)
+    )
+    control_panel.place(relx=0.5, rely=0.92, anchor="center")
+
+    tips_label = ctk.CTkLabel(
+        control_panel,
+        text="💡 Position the student facing the camera with good lighting",
+        font=("Roboto", 10),
+        text_color="#888888"
+    )
+    tips_label.place(relx=0.5, rely=0.5, anchor="center")
 
 
 def troubleshoot_camera(status_label):
@@ -750,3 +876,7 @@ def troubleshoot_camera(status_label):
     
     # Run diagnostics in background thread
     threading.Thread(target=run_diagnostics, daemon=True).start()
+
+
+
+
