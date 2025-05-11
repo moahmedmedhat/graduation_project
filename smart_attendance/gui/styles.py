@@ -1,10 +1,40 @@
+
 # Colors
 BACKGROUND_COLOR = "#212121"
 PRIMARY_COLOR = "#5697B6"
 SECONDARY_COLOR = "#58287F"
 TEXT_COLOR = "white"
+ERROR_COLOR = "#E74C3C"
+SUCCESS_COLOR = "#2ECC71"
 
 # Fonts
-FONT_LARGE = ("Arial", 20, "bold")
-FONT_MEDIUM = ("Arial", 16)
-FONT_SMALL = ("Arial", 12)
+FONT_TITLE = ("Roboto", 24, "bold")
+FONT_LARGE = ("Roboto", 20, "bold")
+FONT_MEDIUM = ("Roboto", 16)
+FONT_SMALL = ("Roboto", 12)
+
+# Button styles
+BUTTON_CORNER_RADIUS = 10
+BUTTON_BORDER_WIDTH = 0
+BUTTON_HEIGHT = 40
+BUTTON_WIDTH = 180
+
+# Card/Frame styles
+CARD_CORNER_RADIUS = 15
+CARD_BORDER_WIDTH = 0
+CARD_PADDING = 20
+
+# Animation durations (ms)
+HOVER_ANIMATION = 150
+
+# Screen dimensions
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 480
+
+# Responsive sizes
+CARD_WIDTH = int(SCREEN_WIDTH * 0.9)
+CARD_HEIGHT = int(SCREEN_HEIGHT * 0.75)
+
+# Common paddings and margins
+STANDARD_PADDING = 20
+SMALL_PADDING = 10
